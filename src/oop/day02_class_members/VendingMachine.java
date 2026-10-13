@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class VendingMachine {
     Scanner sc = new Scanner(System.in);
-    int price;//商品的价格
-    int balance;//余额
-    int total;//总销售额
+    private int price;//商品的价格
+    private int balance;//余额
+    private int total;//总销售额
     void setPrice(int price) {
         this.price = price;
     }
