@@ -2,7 +2,7 @@ package oop.day01_basics;
 
 import java.util.Scanner;
 
-public class Vending_Machine {
+public class VendingMachine {
     int price = 50;//商品的价格(可修改)
     int balance = 0;//余额
     int total = 0;//总销售额
@@ -53,7 +53,7 @@ public class Vending_Machine {
         return yn;
     }
     public static void main(String[] args){
-        Vending_Machine vm = new Vending_Machine();
+        VendingMachine vm = new VendingMachine();
         Scanner sc = new Scanner(System.in);
         int again = 1;
         vm.ShowPrompt();
