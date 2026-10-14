@@ -2,12 +2,13 @@ package oop.day02_class_members;
 
 public class Display {
     private int value = 0;
-    private int limit = 0;
+    private final int limit;
 
     public Display(int limit)
     {
         this.limit = limit;
     }
+
     public void increase()
     {
         value++;
