@@ -22,7 +22,7 @@ public class Endfield {
     {
         totalAttack = (baseAttack)*((1+mainAttribute*0.5)+(1+secondaryAttribute*0.2))*(1+attackUp/100.0)+bounsAttack;
     }
-    public void getDamagebouns()
+    public void getDamageBouns()
     {
         System.out.println("请输入造成伤害增加的值：（这个及后面的游戏内显示为百分比的值均填写百分比，但是都不要带百分号）");
         this.damageBouns = sc.nextInt();
@@ -37,12 +37,12 @@ public class Endfield {
         System.out.println("请输入倍率：");
         this.multiplier = sc.nextInt();
     }
-    public void getCriticaldamage()
+    public void getCriticalDamage()
     {
         System.out.println("请输入暴击伤害：");
         this.criticalDamage = sc.nextInt();
     }
-    public void getCriticalrate()
+    public void getCriticalRate()
     {
         System.out.println("请输入暴击率：");
         this.criticalRate = sc.nextInt();
@@ -67,7 +67,7 @@ public class Endfield {
         System.out.println("请输入敌人抗性的值：（常见的为D级即0抗性）");
         this.resistance = sc.nextInt();
     }
-    public void getArtsstrength()
+    public void getArtsStrength()
     {
         System.out.println("请输入源石技艺强度的值：");
         this.artsStrength = sc.nextInt();
@@ -77,7 +77,7 @@ public class Endfield {
         System.out.println("是否有腐蚀效果？：有（填写是几级），无（0）（默认按持续时间达标的最大值计算减抗效果）");
         this.corrosionLevel = sc.nextInt();
     }
-    public void getFinaldamage()
+    public void getFinalDamage()
     {
         if( corrosionLevel > 0 ){
             this.resistance -= (8 + corrosionLevel * 4) * (1 + (2.0 * artsStrength) / (300 + artsStrength));
@@ -97,17 +97,17 @@ public class Endfield {
         System.out.println("请先输入：基础攻击力、主能力、副能力、额外攻击力、攻击力加成（百分比，不要带百分号）\n这将用于计算总攻击力，没有请填写0");
         Endfield ed = new Endfield(Endfield.sc.nextInt(), Endfield.sc.nextInt(), Endfield.sc.nextInt(), Endfield.sc.nextInt(), Endfield.sc.nextInt());
         //ed.getType();
-        ed.getDamagebouns();
+        ed.getDamageBouns();
         ed.getSusceptibility();
         ed.getMultiplier();
-        ed.getCriticaldamage();
-        ed.getCriticalrate();
+        ed.getCriticalDamage();
+        ed.getCriticalRate();
         ed.getFragility();
         ed.getAmplification();
         ed.getCombo();
-        ed.getArtsstrength();
+        ed.getArtsStrength();
         ed.getCorrosion();
         ed.getResistance();
-        ed.getFinaldamage();
+        ed.getFinalDamage();
     }
 }
