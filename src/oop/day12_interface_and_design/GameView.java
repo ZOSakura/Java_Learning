@@ -41,7 +41,10 @@ public class GameView {
             }
             if ( handler != null ) {
                 String str = handler.doCmd(game, value);
-                if ( !str.isEmpty() ) System.out.println(str);
+                if ( !str.isEmpty() ) {
+                    System.out.println(str);
+                    printExit();
+                }
                 if ( handler.isBye() ) break;
             } else {
                 System.out.println("不存在这个指令！");
