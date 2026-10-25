@@ -36,9 +36,9 @@ public class Game {
 
     public String goRoom(String direction) {
         Room nextRoom = currentRoom.getExit(direction);
-        if (nextRoom == null) return "那里没有门！";
+        if (nextRoom == null) return "那里没有门！" + "\n";
         currentRoom = nextRoom;
-        return "你在" + currentRoom;
+        return "你在" + currentRoom + "\n";
     }
 
     public String getCurrentRoomName() { return currentRoom.toString(); }
