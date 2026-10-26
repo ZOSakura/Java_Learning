@@ -54,6 +54,7 @@ public class GameGUI {
         buttonPanel.add(new JLabel(""));
         frame.add(scrollPane, BorderLayout.NORTH);
         frame.add(buttonPanel, BorderLayout.CENTER);
+        //frame.pack();
         frame.setVisible(true);
     }
 
