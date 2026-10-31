@@ -12,9 +12,6 @@ public class Test {
             printWriter.println("苦也，这也言周");
             printWriter.flush();
             System.out.println(bufferedReader.readLine());
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-            System.out.println("发现了有关文件的异常");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("发现了有关IO流的异常");

@@ -7,13 +7,16 @@ public class BookVault {
     private ArrayList<Book> library;
     public BookVault(){
         try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream("src/oop/SakuraBookVault/Library.dat"))) ) {
-            library = (ArrayList<Book>)in.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            library = (ArrayList<Book>) in.readObject();
+        } catch (FileNotFoundException | EOFException e) {
+            System.out.println("未找到存档或存档文件为空，已为你创建新的空白存档文件！");
+            library = new ArrayList<Book>();
         } catch (IOException e) {
             e.printStackTrace();
+            library = new ArrayList<Book>();
         } catch (Exception e) {
             e.printStackTrace();
+            library = new ArrayList<Book>();
         }
     }
     public void addBook(String title, String author){
@@ -33,10 +36,10 @@ public class BookVault {
             e.printStackTrace();
         }
     }
-    public String getBookInfo(int index){
-        String title = library.get(index).getTitle();
-        String author = library.get(index).getAuthor();
-        boolean borrowed = library.get(index).isBorrowed();
-        return title + " " + author + " " + borrowed;
+    public Book getBook(int index){
+        return library.get(index);
+    }
+    public ArrayList<Book> getAllBooks(){
+        return library;
     }
 }
