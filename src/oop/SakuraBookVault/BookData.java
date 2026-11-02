@@ -13,7 +13,7 @@ public class BookData implements TableModel {
     public BookData(ArrayList<Book> library){
         data = new String[library.size()][colum];
         for( int i = 0 ; i < library.size() ; i++ ){
-            String id = String.format("%04d", i);
+            String id = String.format("%04d", i+1);
             String isBorrowed = library.get(i).isBorrowed() ? "是" : "否";
             data[i][0] = id;
             data[i][1] = library.get(i).getAuthor();
