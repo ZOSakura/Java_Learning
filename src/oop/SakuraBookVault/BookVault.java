@@ -11,6 +11,9 @@ public class BookVault {
         } catch (FileNotFoundException | EOFException e) {
             System.out.println("未找到存档或存档文件为空，已为你创建新的空白存档文件！");
             library = new ArrayList<Book>();
+        } catch (InvalidClassException e){
+            e.printStackTrace();
+            System.out.println("存档文件不匹配!请检查存档文件版本!");
         } catch (IOException e) {
             e.printStackTrace();
             library = new ArrayList<Book>();
@@ -38,6 +41,9 @@ public class BookVault {
     }
     public Book getBook(int index){
         return library.get(index);
+    }
+    public void setBookBorrowStatus(int index, boolean borrowed){
+        library.get(index).setBorrowed(borrowed);
     }
     public ArrayList<Book> getAllBooks(){
         return library;

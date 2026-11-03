@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class GUI {
     private final BookVault bookVault = new BookVault();
@@ -18,7 +20,7 @@ public class GUI {
     private JPanel centerBtns = new JPanel(new GridLayout(2, 2, 5, 5));
     private JButton btnAdd = new JButton("新增书籍");
     private JButton btnRemove = new JButton("删除书籍");
-    private JButton btnBorrow = new JButton("借出书激");
+    private JButton btnBorrow = new JButton("借出书籍");
     private JButton btnReturn = new JButton("归还书籍");
     private JButton btnExit = new JButton("退出程序");
     public GUI(){
@@ -29,57 +31,17 @@ public class GUI {
              if( res != null ){
                  bookVault.addBook(res[0], res[1]);
                  bookVault.saveBooks();
-                 try {
-                     reloadBooks();
-                 } catch (Exception ex) {
-                     ex.printStackTrace();
-                 }
+                 reloadBooks();
              }
         });
         btnRemove.addActionListener(e->{
-            JTable dialogTable = new JTable(new BookData(bookVault.getAllBooks()));
-            JPanel dialogPanel = new JPanel(new BorderLayout());
-            dialogPanel.add(new JScrollPane(dialogTable), BorderLayout.CENTER);
-            while(true) {
-                int choice = JOptionPane.showConfirmDialog(
-                        null,
-                        dialogPanel,
-                        "选择一行以进行删除",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.PLAIN_MESSAGE
-                );
-                if( choice != JOptionPane.OK_OPTION ){
-                    break;
-                }
-                int row = dialogTable.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "你还没选中任何行!",
-                            "警告",
-                            JOptionPane.WARNING_MESSAGE
-                    );
-                    continue;
-                }
-                int reChoice = JOptionPane.showConfirmDialog(
-                        null,
-                        "确定要删除吗？(删除后不可恢复，请谨慎操作！)",
-                        "警告",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE
-                );
-                if( reChoice == JOptionPane.YES_OPTION ){
-                    int modelRow = dialogTable.convertRowIndexToModel(row);
-                    bookVault.removeBook(modelRow);
-                    bookVault.saveBooks();
-                    try {
-                        reloadBooks();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    break;
-                }
-            }
+            showTableSelector("选择一行以进行删除", "你还没选中任何行!", "警告", "确定要删除吗？(删除后不可恢复，请谨慎操作！)", "警告", bookVault::removeBook, null, null);
+        });
+        btnBorrow.addActionListener(e -> {
+            showTableSelector("选择一本书借出", "你还没选中任何一本书!", "警告", "借出后请记得归还! 确定借出请按YES", "注意事项", null, bookVault::setBookBorrowStatus, true);
+        });
+        btnReturn.addActionListener(e->{
+            showTableSelector("选择一本书归还", "你还没选中任何一本书!", "警告", "阅读完了吗？确定归还请按YES", "注意事项", null, bookVault::setBookBorrowStatus, false);
         });
         topSearchPanel.add(searchIcon);
         topSearchPanel.add(searchField);
@@ -122,7 +84,88 @@ public class GUI {
         }
         return null;
     }
-    public void reloadBooks() throws Exception {
+    public void showTableSelector(String panelTitle, String warningMessage, String warningTitle, String reWarningMessage, String reWarningTitle, Consumer<Integer> operation, BiConsumer<Integer, Boolean> biOperation, Boolean borrowed){
+        //制造用于弹窗的表格
+        JTable dialogTable = new JTable(new BookData(bookVault.getAllBooks()));
+        JPanel dialogPanel = new JPanel(new BorderLayout());
+        dialogPanel.add(new JScrollPane(dialogTable), BorderLayout.CENTER);
+        //循环显示表格框
+        while(true) {
+            int choice = JOptionPane.showConfirmDialog(
+                    null,
+                    dialogPanel,
+                    panelTitle,
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            //当用户选择完毕按下OK
+            if( choice != JOptionPane.OK_OPTION ){
+                break;
+            }
+            //获取用户选择的行
+            int row = dialogTable.getSelectedRow();
+            //如果用户没有选择任何一行
+            if (row == -1) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        warningMessage,
+                        warningTitle,
+                        JOptionPane.WARNING_MESSAGE
+                );
+                continue;
+            }
+            //转换为实际的行
+            int modelRow = dialogTable.convertRowIndexToModel(row);
+            //借出与归还判定部分
+            if(borrowed != null) {
+                //获取选中的行对应的那本书
+                Book selectBook = bookVault.getBook(modelRow);
+                //判断是否有重复借出或归还行为:
+                //重复借出:
+                if (selectBook.isBorrowed() == borrowed && borrowed) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "这本书已经被借出了!",
+                            warningTitle,
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    continue;
+                }
+                //重复归还:
+                if (selectBook.isBorrowed() == borrowed && !borrowed) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "这本书还没被借出，不能归还!",
+                            warningTitle,
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    continue;
+                }
+            }
+            //二次确定框，防止误触
+            int reChoice = JOptionPane.showConfirmDialog(
+                    null,
+                    reWarningMessage,
+                    reWarningTitle,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            if( reChoice == JOptionPane.YES_OPTION ){
+                //在一个参数和两个参数的方法中选择调用
+                if( operation != null ) {
+                    operation.accept(modelRow);
+                }
+                if( biOperation != null ){
+                    biOperation.accept(modelRow, borrowed);
+                }
+                //保存并刷新数据
+                bookVault.saveBooks();
+                reloadBooks();
+                break;
+            }else break;
+        }
+    }
+    public void reloadBooks(){
         bookVault.saveBooks();
         table.setModel(new BookData(bookVault.getAllBooks()));
     }
