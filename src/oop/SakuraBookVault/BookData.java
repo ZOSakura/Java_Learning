@@ -3,6 +3,7 @@ package oop.SakuraBookVault;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BookData implements TableModel {
     private String[] title = {
@@ -18,6 +19,19 @@ public class BookData implements TableModel {
             data[i][0] = id;
             data[i][1] = library.get(i).getAuthor();
             data[i][2] = library.get(i).getTitle();
+            data[i][3] = isBorrowed;
+        }
+    }
+    //用于搜索的HashMap特供版
+    public BookData(HashMap<Integer, Book> library, ArrayList<Integer> integerArrayList){
+        data = new String[library.size()][colum];
+        for( int i = 0 ; i < library.size() ; i++ ){
+            Integer integer = integerArrayList.get(i);
+            String id = String.format("%04d", integer + 1);//此处序号为+1后的，改善观感，实际调用应-1以正常调用
+            String isBorrowed = library.get(integer).isBorrowed() ? "是" : "否";
+            data[i][0] = id;
+            data[i][1] = library.get(integer).getAuthor();
+            data[i][2] = library.get(integer).getTitle();
             data[i][3] = isBorrowed;
         }
     }
